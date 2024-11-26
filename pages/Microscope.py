@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import altair as alt
 import re  # For tokenization
+from streamlit_extras.switch_page_button import switch_page
 
 # Constants
 NEURONPEDIA_API_URL = "https://www.neuronpedia.org/api/search-all"
@@ -99,6 +100,10 @@ def plot_graph(x_data, y_data, title, x_label="X-axis", y_label="Y-axis"):
 st.set_page_config(page_title="Token Feature Analysis", layout="wide", page_icon="🔍")
 st.markdown("<h1 style='color:#1F618D;text-align:center;'>Token Feature Analysis Dashboard</h1>", unsafe_allow_html=True)
 
+
+if st.sidebar.button('Microscope', use_container_width=True):
+    switch_page("Microscope")
+
 # Sidebar Input
 st.sidebar.markdown("<h3 style='color:#1ABC9C;'>Input Sentence</h3>", unsafe_allow_html=True)
 sentence = st.sidebar.text_area("Enter a sentence:")
@@ -119,16 +124,10 @@ st.markdown(
         font-size: 14px;
         font-weight: bold;
         padding: 0 10px;  /* Padding inside the button */
-        margin: 0;  /* Remove margin */
+        margin: 0 5px;  /* Margin for spacing between buttons */
     }
     .stButton > button:hover {
         background-color: #005f99;  /* Darker blue on hover */
-    }
-    .button-container {
-        display: flex;
-        gap: 5px;  /* Space between buttons */
-        justify-content: flex-start;  /* Align buttons to the left */
-        flex-wrap: wrap;  /* Allow wrapping for long rows */
     }
     </style>
     """,
@@ -139,13 +138,13 @@ st.markdown(
 if "tokens" in st.session_state and st.session_state.tokens:
     st.markdown("<h2 style='color:#1F618D;'>Sentence Tokenization</h2>", unsafe_allow_html=True)
     
-    # Use HTML to create a container for buttons
-    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    # Create a row of buttons with Streamlit's columns
+    col_count = len(st.session_state.tokens)
+    cols = st.columns([1] * col_count)  # Create as many columns as there are tokens with equal width
     for idx, token in enumerate(st.session_state.tokens):
-        # Each button is displayed inline in the container
-        if st.button(token, key=f"token_{idx}"):
-            st.session_state.selected_token = token
-    st.markdown('</div>', unsafe_allow_html=True)
+        with cols[idx]:
+            if st.button(token, key=f"token_{idx}"):
+                st.session_state.selected_token = token
 
 # Fetch and Display Explanations
 if st.session_state.selected_token:
