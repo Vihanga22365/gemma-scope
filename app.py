@@ -25,7 +25,7 @@ MODEL_ID = "gemma-2-9b-it"
 HEADERS = {"Content-Type": "application/json", "X-Api-Key": "YOUR_TOKEN"}
 
 
-if st.sidebar.button('Microscope', use_container_width=True):
+if st.sidebar.button('Microscope App', use_container_width=True):
     switch_page("Microscope")
     
 # Streamlit UI
